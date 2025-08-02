@@ -114,9 +114,6 @@ void Database_write(struct Connection *conn)
 
     rc = fflush(conn->file);
     if(rc == -1) die("Cannot flush database.", conn);
-
-    int cnt = sizeof(struct db_header_s) + db_body_size(conn->db);
-    printf("Database_write, total_cnt:%d\n", cnt);
 }
 
 void Database_create(struct Connection *conn)
@@ -164,9 +161,36 @@ void Database_get(struct Connection *conn, int id)
     }
 }
 
+void Database_find(struct Connection *conn, int id)
+{
+    if(id >= conn->db->header.max_rows) {
+        char log[256];
+
+        sprintf(log, "id[%d] is error, max_rows:%d", id, conn->db->header.max_rows);
+        die(log, conn);
+        return;
+    }
+
+    struct Address *addr = (struct Address *)(conn->db->body + id * db_row_size(conn->db));
+
+    if(addr->set) {
+        printf("ID:%d is set\n", id);
+    } else {
+        printf("ID:%d is not set\n", id);
+    }
+}
+
 void Database_delete(struct Connection *conn, int id)
 {
-    struct Address *addr = (struct Address *)(conn->db->body + db_row_size(conn->db));
+    if(id >= conn->db->header.max_rows) {
+        char log[256];
+
+        sprintf(log, "id[%d] is error, max_rows:%d", id, conn->db->header.max_rows);
+        die(log, conn);
+        return;
+    }
+
+    struct Address *addr = (struct Address *)(conn->db->body + id * db_row_size(conn->db));
 
     memset(addr, 0, db_row_size(conn->db));
     addr->id  = id;
@@ -202,8 +226,6 @@ int main(int argc, char *argv[])
         int unsigned max_data = atoi(argv[3]);
         int unsigned max_row = atoi(argv[4]);
 
-        printf("create, max_data:%d, max_rows:%d\n", max_data, max_row);
-
         conn = Database_open(filename, action, max_data, max_row);
     } else {
         conn = Database_open(filename, action, 0, 0);
@@ -230,7 +252,7 @@ int main(int argc, char *argv[])
         case 'f':
             if(argc != 4) die("Need an id to find", conn);
 
-            Database_get(conn, id);
+            Database_find(conn, id);
             break;
 
         case 's':
