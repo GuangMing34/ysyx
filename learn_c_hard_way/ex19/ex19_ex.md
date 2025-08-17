@@ -9,7 +9,7 @@
 
 ## answer
 code:
-[add assert](./ex19_assert/)
+[add assert](./ex19_assert/ex19.c)
 
 # question 5:
 > 编写另一个排序算法，修改test_sorting使它接收任意的排序函数和排序函数的比较回调。并使用它来测试两种排序算法。

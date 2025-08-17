@@ -11,29 +11,35 @@ void Object_destroy(void *self)
     if(obj) {
         if(obj->description) free(obj->description);
         free(obj);
+    } else {
+        printf("error!!!%s#%d", __func__, __LINE__);
     }
 }
 
 void Object_describe(void *self)
 {
     Object *obj = self;
+    assert(obj != NULL);
     printf("%s.\n", obj->description);
 }
 
 int Object_init(void *self)
 {
     // do nothing really
+    assert(self != NULL);
     return 1;
 }
 
 void *Object_move(void *self, Direction direction)
 {
+    assert(self != NULL);
     printf("You can't go that direction.\n");
     return NULL;
 }
 
 int Object_attack(void *self, int damage)
 {
+    assert(self != NULL);
     printf("You can't attack that.\n");
     return 0;
 }
@@ -50,10 +56,14 @@ void *Object_new(size_t size, Object proto, char *description)
     // this seems weird, but we can make a struct of one size,
     // then point a different pointer at it to "cast" it
     Object *el = calloc(1, size);
+
+    assert(el != NULL);
+
     *el = proto;
 
     // copy the description over
     el->description = strdup(description);
+    assert(el->description != NULL);
 
     // initialize it with whatever init we were given
     if(!el->init(el)) {
