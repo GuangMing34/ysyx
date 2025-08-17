@@ -144,6 +144,10 @@ int Map_init(void *self)
     arena->bad_guy = NEW(Monster, "The evil minotaur");
 
     assert(arena->bad_guy);
+
+    kitchen->bad_guy = NEW(Monster, "The evil minotaur");
+
+    assert(kitchen->bad_guy);
     // setup the map rooms
     hall->north = throne;
 
