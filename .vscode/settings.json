@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "ex19.h": "c",
+        "stdint.h": "c",
+        "stdint-uintn.h": "c",
+        "dbg.h": "c"
+    }
+}
