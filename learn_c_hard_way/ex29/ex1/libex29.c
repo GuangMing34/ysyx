@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
-#include "../ex20/dbg.h"
+#include "../../ex20/dbg.h"
 
 
 int print_a_message(const char *msg)
@@ -11,12 +11,12 @@ int print_a_message(const char *msg)
 }
 
 
-int uppercase(const char *msg)
+int uppercase(const char *msg, size_t len)
 {
     int i = 0;
 
     // BUG: \0 termination problems
-    for(i = 0; msg[i] != '\0'; i++) {
+    for(i = 0; i < len; i++) {
         printf("%c", toupper(msg[i]));
     }
 
@@ -25,12 +25,12 @@ int uppercase(const char *msg)
     return 0;
 }
 
-int lowercase(const char *msg)
+int lowercase(const char *msg, size_t len)
 {
     int i = 0;
 
     // BUG: \0 termination problems
-    for(i = 0; msg[i] != '\0'; i++) {
+    for(i = 0; i < len; i++) {
         printf("%c", tolower(msg[i]));
     }
 
