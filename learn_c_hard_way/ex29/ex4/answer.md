@@ -1,0 +1,8 @@
+原始代码默认使用RTLD_NOW，
+会在dlopen阶段就会对symbol进行解析，如果有外部定义的函数，没有在此次动态加载进来，就会直接报错。
+至于RTLD_LAZY，到load symbol阶段都不会报错，只会在具体执行到对应的symbol的时候才会进行真正的检查和报错
+
+
+RTLD_LOCAL和RTLD_GLOBAL
+表示加载的函数符号的作用范围，RTLD_LOCAL与RTLD_GLOBAL作用相反，RTLD_GLOBAL 动态库中符号表全局打开，因此符号可被其后打开的其它库重定位；RTLD_LOCAL  动态库中符号表非全局打开，定义的符号不能被其后打开的其它库重定位。
+默认不带的话是RTLD_LOCAL
