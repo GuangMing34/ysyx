@@ -3,8 +3,8 @@
 #include <assert.h>
 #include <string.h>
 
-char *values[] = {"XXXX", "1234", "abcd", "xjvef", "NDSS"};
-#define NUM_VALUES 5
+char *values[] = {"XXXX", "1234", "abcd", "xjvef", "NDSS", "apple", "applepie", "applecider", "appleseed", "applause"};
+#define NUM_VALUES 10
 
 List *create_words()
 {
@@ -78,26 +78,27 @@ char *test_merge_sort()
 
 char * bubble_vs_merge_sort()
 {
-    time_t start, end;
-    int loop = 10000000;
+    struct timespec start, end;
+    int unsigned loop = 10000000;
     double diff;
 
     srand(time(NULL));
-    start = time(NULL);
+    clock_gettime(CLOCK_MONOTONIC, &start);
     for (size_t i = 0; i < loop; i++)
     {
         test_bubble_sort();
     }
-    end = time(NULL);
-    diff = difftime(end, start);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    diff = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     printf("Bubble sort time for %d sorts: %f seconds\n", loop, diff);
-    start = time(NULL);
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
     for (size_t i = 0; i < loop; i++)  
     {
         test_merge_sort();
     }
-    end = time(NULL);
-    diff = difftime(end, start);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    diff = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     printf("Merge sort time for %d sorts: %f seconds\n", loop, diff);
 
 
