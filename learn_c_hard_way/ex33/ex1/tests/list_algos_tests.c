@@ -74,6 +74,36 @@ char *test_merge_sort()
     return NULL;
 }
 
+#include <time.h>
+
+char * bubble_vs_merge_sort()
+{
+    time_t start, end;
+    int loop = 10000000;
+    double diff;
+
+    srand(time(NULL));
+    start = time(NULL);
+    for (size_t i = 0; i < loop; i++)
+    {
+        test_bubble_sort();
+    }
+    end = time(NULL);
+    diff = difftime(end, start);
+    printf("Bubble sort time for %d sorts: %f seconds\n", loop, diff);
+    start = time(NULL);
+    for (size_t i = 0; i < loop; i++)  
+    {
+        test_merge_sort();
+    }
+    end = time(NULL);
+    diff = difftime(end, start);
+    printf("Merge sort time for %d sorts: %f seconds\n", loop, diff);
+
+
+    return NULL;
+}
+
 
 char *all_tests()
 {
@@ -82,6 +112,7 @@ char *all_tests()
     mu_run_test(test_bubble_sort);
     mu_run_test(test_merge_sort);
 
+    mu_run_test(bubble_vs_merge_sort)
     return NULL;
 }
 
