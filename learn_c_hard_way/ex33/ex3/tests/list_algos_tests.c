@@ -6,13 +6,47 @@
 char *values[] = {"XXXX", "1234", "abcd", "xjvef", "NDSS", "apple", "applepie", "applecider", "appleseed", "applause"};
 #define NUM_VALUES 10
 
+int unsigned str_cnt;
+char **str_arr;
+int unsigned init_done = 0;
+
 List *create_words()
 {
     int i = 0;
+    int rand_len = 0;
+    int MAX_STR_LEN = 8;
+    int MAX_ENTRY_LEN = 7;
+    int MIN_ENTRY_LEN = 3;
+
     List *words = List_create();
 
-    for(i = 0; i < NUM_VALUES; i++) {
-        List_push(words, values[i]);
+    if (init_done == 0) {
+        init_done = 1;
+
+        str_cnt = rand() % (MAX_ENTRY_LEN - MIN_ENTRY_LEN + 1) + MIN_ENTRY_LEN;
+        str_arr = malloc(sizeof(char *) * str_cnt);
+        for (int i = 0; i < str_cnt; i++)
+        {
+            int cap_en = 0;
+
+            rand_len = rand() % MAX_STR_LEN;
+            rand_len += 5; // ensure min length of 5
+            str_arr[i] = malloc(sizeof(char) * (rand_len + 1));
+            for (int j = 0; j < rand_len; j++)
+            {
+                cap_en = rand() % 2;
+                if (cap_en)
+                    str_arr[i][j] = 'A' + (rand() % 26);
+                else
+                    str_arr[i][j] = 'a' + (rand() % 26);
+            }
+            str_arr[i][rand_len] = '\0';
+            // printf("Generated entry[%d/%d]: %s\n", i, str_cnt, str_arr[i]);
+        }
+    }
+
+    for(i = 0; i < str_cnt; i++) {
+        List_push(words, str_arr[i]);
     }
 
     return words;
@@ -93,7 +127,7 @@ char * bubble_vs_merge_sort()
     printf("Bubble sort time for %d sorts: %f seconds\n", loop, diff);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
-    for (size_t i = 0; i < loop; i++)  
+    for (size_t i = 0; i < loop; i++)
     {
         test_merge_sort();
     }
