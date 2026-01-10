@@ -57,6 +57,38 @@ merge 随着数据量加大，增长更快，超过2倍接近3倍
 > 寻找方法来创建不同长度的随机链表，并且测量需要多少时间，之后将它可视化并与算法的描述对比。
 
 ## answer
+[list_algos_tests.c](./ex3/tests/list_algos_tests.c)
+关键代码如下，主要是创建一个内容，但是仅仅创建一次即可。
+如果每次都创建，会有数据共享的问题，在merge的流程中，这个创建的东西会共享到多个地方，如果前面free了，后边用起来就会有问题
+如果不free，在循环次数多的情况下，会爆heap
+所以，对于当前的结构来说，最好的方式就是模拟一个静态的str list. 运行时候只做一次创建。
+
+```c
+if (init_done == 0) {
+    init_done = 1;
+
+    str_cnt = rand() % (MAX_ENTRY_LEN - MIN_ENTRY_LEN + 1) + MIN_ENTRY_LEN;
+    str_arr = malloc(sizeof(char *) * str_cnt);
+    for (int i = 0; i < str_cnt; i++)
+    {
+        int cap_en = 0;
+
+        rand_len = rand() % MAX_STR_LEN;
+        rand_len += 5; // ensure min length of 5
+        str_arr[i] = malloc(sizeof(char) * (rand_len + 1));
+        for (int j = 0; j < rand_len; j++)
+        {
+            cap_en = rand() % 2;
+            if (cap_en)
+                str_arr[i][j] = 'A' + (rand() % 26);
+            else
+                str_arr[i][j] = 'a' + (rand() % 26);
+        }
+        str_arr[i][rand_len] = '\0';
+        // printf("Generated entry[%d/%d]: %s\n", i, str_cnt, str_arr[i]);
+    }
+}
+```
 
 # 附加题4
 ## question
@@ -70,8 +102,62 @@ merge 随着数据量加大，增长更快，超过2倍接近3倍
 
 # 附加题5
 ## question
-> 实现List_insert_sorted（有序链表），它使用List_compare，接收一个值，将其插入到正确的位置，使链表有序。它与创建链表后再进行排序相比怎么样？
+> 实现 List_insert_sorted （有序链表），它使用List_compare，接收一个值，将其插入到正确的位置，使链表有序。它与创建链表后再进行排序相比怎么样？
 ## answer
+code: [list_algos.c](./ex5/list_algos.c)
+
+相比较于创建后再排序，插入排序会把降低时间开销，因为它只需要遍历一次链表，而排序需要遍历多次链表。
+但是坏处就是每次插入都需要做一次比较，而排序只需要做一次比较。
+
+内存方向，依据实现的不同，插入后排序可能因为排序的中间状态的暂存导致消耗更多的内存，而插入排序则不会，只会改动前后节点的指针。
+
+```c
+List *List_insert_sorted(List *list, void *value, List_compare cmp)
+{
+    ListNode *node = calloc(1, sizeof(ListNode));
+
+    node->value = value;
+
+    if(!value) {
+        return NULL;
+    }
+
+    if(List_count(list) == 0) {
+        list->first = node;
+        list->last = node;
+        list->count++;
+        return list;
+    }
+
+    LIST_FOREACH(list, first, next, cur) {
+        if (cmp(cur->value, node->value) > 0) {
+            //insert before cur
+            ListNode *pre_node = cur->prev;
+            ListNode *cur_node = cur;
+
+            node->next = cur;
+            node->prev = pre_node;
+            cur->prev = node;
+            if(pre_node) {
+                pre_node->next = node;
+            } else {
+                //inserting at head
+                list->first = node;
+            }
+            break;
+        } else if (cur->next == NULL) {
+            //insert after cur (at end)
+            cur->next = node;
+            node->prev = cur;
+            node->next = NULL;
+            list->last = node;
+            break;
+        }
+    }
+
+    return list;
+}
+```
 
 # 附加题6
 ## question

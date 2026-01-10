@@ -20,9 +20,7 @@ List *create_words()
 
     List *words = List_create();
 
-    if (init_done == 0) {
-        init_done = 1;
-
+    {
         str_cnt = rand() % (MAX_ENTRY_LEN - MIN_ENTRY_LEN + 1) + MIN_ENTRY_LEN;
         str_arr = malloc(sizeof(char *) * str_cnt);
         for (int i = 0; i < str_cnt; i++)
@@ -41,7 +39,7 @@ List *create_words()
                     str_arr[i][j] = 'a' + (rand() % 26);
             }
             str_arr[i][rand_len] = '\0';
-            // printf("Generated entry[%d/%d]: %s\n", i, str_cnt, str_arr[i]);
+            printf("Generated entry[%d/%d]: %s\n", i, str_cnt, str_arr[i]);
         }
     }
 
@@ -108,6 +106,38 @@ char *test_merge_sort()
     return NULL;
 }
 
+char *test_sorted_insert()
+{
+    List *words = create_words();
+    List *sorted_list = List_create();
+    ListNode *word_node;
+
+    word_node = words->first;
+    while(word_node) {
+        printf("Before sort: %s\n", (char *)word_node->value);
+        word_node = word_node->next;
+    }
+
+    word_node = words->first;
+    while(word_node) {
+        //printf("Inserting: %s\n", (char *)word_node->value);
+        List_insert_sorted(sorted_list, word_node->value, (List_compare)strcmp);
+        word_node = word_node->next;
+    }
+    mu_assert(is_sorted(sorted_list), "Words are not sorted after insert sort.");
+
+    word_node = sorted_list->first;
+    while(word_node) {
+        printf("After sort: %s\n", (char *)word_node->value);
+        word_node = word_node->next;
+    }
+
+    List_destroy(sorted_list);
+
+    List_destroy(words);
+    return NULL;
+}
+
 #include <time.h>
 
 char * bubble_vs_merge_sort()
@@ -146,8 +176,9 @@ char *all_tests()
 
     mu_run_test(test_bubble_sort);
     mu_run_test(test_merge_sort);
+    mu_run_test(test_sorted_insert);
 
-    mu_run_test(bubble_vs_merge_sort)
+    //mu_run_test(bubble_vs_merge_sort)
     return NULL;
 }
 

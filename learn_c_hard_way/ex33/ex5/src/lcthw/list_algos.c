@@ -85,3 +85,51 @@ List *List_merge_sort(List *list, List_compare cmp)
 
     return List_merge(sort_left, sort_right, cmp);
 }
+
+
+
+List *List_insert_sorted(List *list, void *value, List_compare cmp)
+{
+    ListNode *node = calloc(1, sizeof(ListNode));
+
+    node->value = value;
+
+    if(!value) {
+        return NULL;
+    }
+
+    if(List_count(list) == 0) {
+        list->first = node;
+        list->last = node;
+        list->count++;
+        return list;
+    }
+
+    LIST_FOREACH(list, first, next, cur) {
+        if (cmp(cur->value, node->value) > 0) {
+            //insert before cur
+            ListNode *pre_node = cur->prev;
+            ListNode *cur_node = cur;
+
+            node->next = cur;
+            node->prev = pre_node;
+            cur->prev = node;
+            if(pre_node) {
+                pre_node->next = node;
+            } else {
+                //inserting at head
+                list->first = node;
+            }
+            break;
+        } else if (cur->next == NULL) {
+            //insert after cur (at end)
+            cur->next = node;
+            node->prev = cur;
+            node->next = NULL;
+            list->last = node;
+            break;
+        }
+    }
+
+    return list;
+}
