@@ -9,4 +9,5 @@ int List_bubble_sort(List *list, List_compare cmp);
 
 List *List_merge_sort(List *list, List_compare cmp);
 
+void BottomUpMergeSort(int A[], int B[], int n);
 #endif

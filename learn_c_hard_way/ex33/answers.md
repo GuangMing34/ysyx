@@ -163,4 +163,10 @@ List *List_insert_sorted(List *list, void *value, List_compare cmp)
 ## question
 > 尝试实现维基百科上“自底向上”的归并排序。上面的代码已经是C写的了，所以很容易重新创建，但是要试着理解它的工作原理，并与这里的低效版本对比。
 ## answer
-
+wikipedia上的是数组排序, 并且是数值排序，这里是链表排序，带自定义比对函数指针的排序，还有点不太一样
+至于效率层面，数组本身和链表的操作不同，感觉可比性不是很大
+比如数组可以直接寻址，链表需要逐个寻址，尤其是在这个算法原本的逻辑上，是按照长度逐次增加，每种长度下，都需要对不同的部分做链表寻址，寻址压力比较大
+[list_algos.c](./ex6/list_algos.c) 
+```C
+void BottomUpMergeSort(int A[], int B[], int n)
+```

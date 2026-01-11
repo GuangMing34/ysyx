@@ -113,7 +113,7 @@ char *test_merge_sort()
 char * bubble_vs_merge_sort()
 {
     struct timespec start, end;
-    int unsigned loop = 10000000;
+    int unsigned loop = 10000;
     double diff;
 
     srand(time(NULL));
@@ -139,6 +139,42 @@ char * bubble_vs_merge_sort()
     return NULL;
 }
 
+char * wiki_bottom_up_merge_sort()
+{
+    int *A;
+    int n;
+    int *B;
+    struct timespec start, end;
+    int unsigned loop = 10000;
+    double diff;
+
+    n = random() % 128 + 128; //128-256
+    A = malloc(sizeof(int) * n);
+    B = malloc(sizeof(int) * n);
+    for (size_t i = 0; i < n; i++)
+    {
+        A[i] = random() % 10000;
+    }
+
+    srand(time(NULL));
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    BottomUpMergeSort(A, B, n);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    diff = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    printf("BottomUpMergeSort time for %d sorts: %f seconds\n", loop, diff);
+
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d ", A[i]);
+    }
+    printf("\n");
+
+    free(A);
+    free(B);
+
+    return NULL;
+}
+
 
 char *all_tests()
 {
@@ -148,6 +184,7 @@ char *all_tests()
     mu_run_test(test_merge_sort);
 
     mu_run_test(bubble_vs_merge_sort)
+    mu_run_test(wiki_bottom_up_merge_sort);
     return NULL;
 }
 
